@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privazer Lisans Anahtarı Üreticisi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        input[type="email"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result.show {
+            display: block;
+        }
+        
+        .license-key {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px dashed #667eea;
+            margin: 15px 0;
+            letter-spacing: 2px;
+        }
+        
+        .details {
+            font-size: 14px;
+            color: #666;
+            margin-top: 15px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        .copy-btn:hover {
+            background: #218838;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left-color: #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🔐 Privazer Lisans Üreticisi</h1>
+        <p class="subtitle">E-posta adresinizi girerek lisans anahtarı oluşturun</p>
+        
+        <div class="warning">
+            ⚠️ Bu araç sadece eğitim amaçlıdır. Gerçek yazılım lisansları için resmi kanalları kullanın.
+        </div>
+        
+        <div class="form-group">
+            <label for="email">E-posta Adresi:</label>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="username@example.com"
+                autocomplete="email"
+            >
+        </div>
+        
+        <button type="button" class="btn" id="generateBtn" onclick="generateLicense()">
+            Lisans Anahtarı Oluştur
+        </button>
+        
+        <div id="result" class="result">
+            <h3>📋 Sonuç</h3>
+            <div class="license-key" id="licenseKey"></div>
+            <button class="copy-btn" onclick="copyLicense()">📋 Kopyala</button>
+            
+            <div class="details" id="details"></div>
+        </div>
+    </div>
+
+    <script>
+        function generateLicense() {
+            const emailInput = document.getElementById('email');
+            const email = emailInput.value.trim();
+            const generateBtn = document.getElementById('generateBtn');
+            
+            if (!email) {
+                showError('Lütfen bir e-posta adresi girin.');
+                return;
+            }
+            
+            if (!email.includes('@')) {
+                showError('Lütfen geçerli bir e-posta adresi girin (@ içermeli).');
+                return;
+            }
+            
+            // Loading durumu
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Oluşturuluyor...';
+            
+            setTimeout(() => {
+                try {
+                    // @ işaretinden önceki prefix'i al
+                    const prefix = email.split('@')[0];
+                    
+                    if (prefix.length === 0) {
+                        showError('E-posta adresinin @ işaretinden önce en az bir karakter olmalıdır.');
+                        return;
+                    }
+                    
+                    // Orijinal Python algoritmasını uygula
+                    const license = [];
+                    const charDetails = [];
+                    
+                    // Her karakter için ASCII değerini al ve rakamlarını ayır
+                    for (let char of prefix) {
+                        const asciiValue = char.charCodeAt(0);
+                        const asciiString = asciiValue.toString();
+                        const asciiDigits = asciiString.split('');
+                        
+                        // Her rakamı license array'ine ekle
+                        for (let digit of asciiDigits) {
+                            license.push(digit);
+                        }
+                        
+                        charDetails.push({
+                            char: char,
+                            ascii: asciiValue,
+                            digits: asciiDigits
+                        });
+                    }
+                    
+                    // İlk 10 rakamı kontrol et
+                    if (license.length < 10) {
+                        showError(`Üretilen anahtar çok kısa (${license.length} rakam). En az 10 rakama ihtiyaç var.`);
+                        return;
+                    }
+                    
+                    // İlk 10 rakamı al
+                    const licenseKey = license.slice(0, 10).join('');
+                    
+                    // Sonuçları göster
+                    document.getElementById('licenseKey').textContent = licenseKey;
+                    
+                    // Detayları oluştur
+                    let detailsHTML = '<h4>🔍 Detaylar:</h4>';
+                    detailsHTML += `<div class="detail-row"><span><strong>E-posta:</strong></span><span>${email}</span></div>`;
+                    detailsHTML += `<div class="detail-row"><span><strong>Prefix:</strong></span><span>${prefix}</span></div>`;
+                    detailsHTML += `<div class="detail-row"><span><strong>Lisans Anahtarı:</strong></span><span>${licenseKey}</span></div>`;
+                    detailsHTML += `<div class="detail-row"><span><strong>Tam Rakam Dizisi:</strong></span><span>${license.join('')}</span></div>`;
+                    detailsHTML += '<h5 style="margin: 15px 0 10px 0;">📊 Karakter Analizi:</h5>';
+                    
+                    charDetails.forEach(detail => {
+                        detailsHTML += `<div class="detail-row">
+                            <span><strong>'${detail.char}'</strong> → ASCII: ${detail.ascii}</span>
+                            <span>Rakamlar: [${detail.digits.join(', ')}]</span>
+                        </div>`;
+                    });
+                    
+                    document.getElementById('details').innerHTML = detailsHTML;
+                    
+                    // Sonuç alanını göster
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.className = 'result show';
+                    
+                } catch (error) {
+                    showError('Bir hata oluştu: ' + error.message);
+                } finally {
+                    // Loading durumunu kaldır
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = 'Lisans Anahtarı Oluştur';
+                }
+            }, 300);
+        }
+        
+        function showError(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result show error';
+            resultDiv.innerHTML = `<h3>❌ Hata</h3><p>${message}</p>`;
+        }
+        
+        function copyLicense() {
+            const licenseKey = document.getElementById('licenseKey').textContent;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(licenseKey).then(() => {
+                    showCopySuccess();
+                }).catch(() => {
+                    fallbackCopy(licenseKey);
+                });
+            } else {
+                fallbackCopy(licenseKey);
+            }
+        }
+        
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopySuccess();
+            } catch (err) {
+                alert('Kopyalama başarısız. Lütfen manuel olarak seçip kopyalayın.');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        function showCopySuccess() {
+            const copyBtn = document.querySelector('.copy-btn');
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '✅ Kopyalandı!';
+            copyBtn.style.background = '#218838';
+            
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.style.background = '#28a745';
+            }, 2000);
+        }
+        
+        // Enter tuşu ile form gönderimi
+        document.getElementById('email').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateLicense();
+            }
+        });
+        
+        // Auto-focus
+        window.addEventListener('load', () => {
+            document.getElementById('email').focus();
+        });
+    </script>
+</body>
+</html>
